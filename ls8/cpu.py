@@ -7,18 +7,10 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.ram = [0b00000000] * 255
-        self.pc = 0 #program count
-        self.R0 = 0b00000000
-        self.R1 = 0b00000001
-        self.R2 = 0b00000010
-        self.R3 = 0b00000011
-        self.R4 = 0b00000100
-        self.R5 = 0b00000101
-        self.R6 = 0b00000110
-        self.R7 = 0b00000111
-        self.R8 = 0b00001000
+        self.ram     = [0b00000000] * 256
+        self.pc      = 0 #program count
         self.running = True
+        self.reg      = [0b0000000] * 8 #8 registers
 
     def load(self):
         """Load a program into memory."""
@@ -46,6 +38,9 @@ class CPU:
 
     def ram_write(self,MAR, MDR):
         self.ram[MAR] = MDR
+
+    def h(self):
+        self.running = False
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -79,15 +74,23 @@ class CPU:
     def run(self):
         """Run the CPU."""
         while self.running:
-            self.load()
-            command = ram[pc]
-            if command == 0b10000010:
-                self.write(ram[pc+1],ram[pc+2])
-                pc +=3
-            elif command == 0b01000111:
-                print(self.read(ram[pc+1]))
-            else:
-                pass
+            IR = self.reg[0]
+            IR = self.ram[self.pc]
+            operand_a = self.ram[self.pc+1]
+            operand_b = self.ram[self.pc+2]
+            
+            if IR == 0b10000010:
+                self.ram_write(operand_a,operand_b)
+                self.pc +=3
+            
+            elif IR == 0b01000111:
+
+                print(self.ram_read(operand_a))
+                self.pc+=2
+            
+            elif IR == 0b00000001:
+                self.h()
+
 
 
             
