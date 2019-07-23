@@ -81,6 +81,14 @@ class CPU:
         while self.running:
             self.load()
             command = ram[pc]
-            
+            if command == 0b10000010:
+                self.write(ram[pc+1],ram[pc+2])
+                pc +=3
+            elif command == 0b01000111:
+                print(self.read(ram[pc+1]))
+            else:
+                pass
+
+
             
 
