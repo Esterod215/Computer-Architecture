@@ -8,5 +8,6 @@ from cpu import *
 cpu = CPU()
 
 cpu.load()
+print(cpu.ram)
 cpu.run()
-cpu.h()
+print('after run')
