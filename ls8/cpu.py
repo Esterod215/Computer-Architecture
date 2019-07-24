@@ -43,7 +43,7 @@ class CPU:
                         continue
                    
                     self.ram[address] = int(byte,2)
-                    print(self.ram[address])
+                    # print(self.ram[address])
                     address+=1
             f.close()
                    
@@ -55,16 +55,17 @@ class CPU:
 
 
     def ram_read(self,MAR):
-        return self.ram[MAR]
+        return self.reg[MAR]
 
     def ram_write(self,MAR, MDR):
-        self.ram[MAR] = MDR
+        self.reg[MAR] = MDR
 
     def h(self):
         self.running = False
 
-    def mult(self,address1,address2):
-        pass
+    def mult(self,v1,v2):
+        self.reg[v1] = self.reg[v1] * self.reg[v2]
+        
 
 
     def alu(self, op, reg_a, reg_b):
@@ -103,33 +104,30 @@ class CPU:
         LDI = 0b10000010
         MUL = 0b10100010
         IR = self.reg[0]
-        MAR = self.reg[1]
-        MDR = self.reg[2]        
+               
         while self.running:
             IR = self.ram[self.pc]
-            # operand_a = self.ram[self.pc+1]
-            MAR = self.ram[self.pc + 1]
-            MDR = self.ram[self.pc + 2]
-            # operand_b = self.ram[self.pc+2]
-            print(IR)
+            operand_a = self.ram[self.pc+1]
+            operand_b = self.ram[self.pc+2]
+            # print(IR)
             
             if IR == LDI:
-                print('entered LDI')
-                self.ram_write(MAR,MDR)
+                # print('entered LDI')
+                self.ram_write(operand_a,operand_b)
                 self.pc +=3
             
             elif IR == PRN:
-                print('print')
-                print(self.ram_read(MAR))
+                # print('print')
+                print(self.ram_read(operand_a))
                 self.pc+=2
             
             elif IR == HLT:
-                print('HLT')
+                # print('HLT')
                 self.h()
             
             elif IR == MUL:
-                print('multiplied numbers')
-                self.pc+=2
+                self.mult(operand_a,operand_b)
+                self.pc+=3
 
             else:
                 print('command not supported')
