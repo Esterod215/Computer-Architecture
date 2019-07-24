@@ -38,11 +38,14 @@ class CPU:
         try:
             with open(f"examples/{sys.argv[1]}") as f:
                 for line in f:
-                    byte = line.split('#',1)[0]
-                    if byte.strip() == '':
+                    byte = line.split('#',1)[0].strip()
+                    if byte == '':
                         continue
-                    
+                   
                     self.ram[address] = int(byte,2)
+                    print(self.ram[address])
+                    address+=1
+            f.close()
                    
                                        
         
@@ -102,14 +105,13 @@ class CPU:
                 self.pc +=3
             
             elif IR == 0b01000111:
-
                 print(self.ram_read(operand_a))
                 self.pc+=2
             
             elif IR == 0b00000001:
                 self.h()
             else:
-                print('nothing passed')
+                print('command not supported')
 
 
 
