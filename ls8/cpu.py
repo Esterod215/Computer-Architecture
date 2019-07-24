@@ -10,7 +10,7 @@ class CPU:
         self.ram     = [0b00000000] * 256
         self.pc      = 0 #program count
         self.running = True
-        self.reg      = [0b0000000] * 8 #8 registers
+        self.reg      = [0] * 8 #8 registers
 
     def load(self):
         """Load a program into memory."""
@@ -63,6 +63,10 @@ class CPU:
     def h(self):
         self.running = False
 
+    def mult(self,address1,address2):
+        pass
+
+
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
@@ -94,24 +98,42 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        HLT = 0b00000001
+        PRN = 0b01000111
+        LDI = 0b10000010
+        MUL = 0b10100010
+        IR = self.reg[0]
+        MAR = self.reg[1]
+        MDR = self.reg[2]        
         while self.running:
-            IR = self.reg[0]
             IR = self.ram[self.pc]
-            operand_a = self.ram[self.pc+1]
-            operand_b = self.ram[self.pc+2]
+            # operand_a = self.ram[self.pc+1]
+            MAR = self.ram[self.pc + 1]
+            MDR = self.ram[self.pc + 2]
+            # operand_b = self.ram[self.pc+2]
+            print(IR)
             
-            if IR == 0b10000010:
-                self.ram_write(operand_a,operand_b)
+            if IR == LDI:
+                print('entered LDI')
+                self.ram_write(MAR,MDR)
                 self.pc +=3
             
-            elif IR == 0b01000111:
-                print(self.ram_read(operand_a))
+            elif IR == PRN:
+                print('print')
+                print(self.ram_read(MAR))
                 self.pc+=2
             
-            elif IR == 0b00000001:
+            elif IR == HLT:
+                print('HLT')
                 self.h()
+            
+            elif IR == MUL:
+                print('multiplied numbers')
+                self.pc+=2
+
             else:
                 print('command not supported')
+                self.h()
 
 
 
