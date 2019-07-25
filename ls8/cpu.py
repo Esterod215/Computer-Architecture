@@ -77,11 +77,13 @@ class CPU:
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
+        
 
         if op == "ADD":
+            print('inside ADD')
             self.reg[reg_a] += self.reg[reg_b]
         #elif op == "SUB": etc
-        if op == "MUL":
+        elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
@@ -116,6 +118,8 @@ class CPU:
         PUSH              = 0b01000101
         POP               = 0b01000110
         CALL              = 0b01010000
+        RETURN            = 0b00010001
+        ADD               = 0b10100000
         self.reg[self.sp] = 0b11110100  #F4
                
         while self.running:
@@ -161,6 +165,17 @@ class CPU:
                 self.ram[self.reg[self.sp]] = ret_address
                 subroutine_address = self.reg[operand_a]
                 self.pc = subroutine_address 
+
+            elif IR == RETURN:
+                return_address = self.ram[self.reg[self.sp]]
+                self.reg[self.sp] += 1
+                self.pc = return_address
+
+            elif IR == ADD:
+                
+                self.alu('ADD',operand_a,operand_b)
+                self.pc += 3
+
 
 
 
