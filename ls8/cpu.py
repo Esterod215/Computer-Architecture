@@ -111,6 +111,7 @@ class CPU:
         MUL               = 0b10100010
         IR                = self.reg[0]
         PUSH              = 0b01000101
+        POP               = 0b01000110
         self.reg[self.sp] = 0b11110100  #F4
                
         while self.running:
@@ -139,11 +140,18 @@ class CPU:
                 self.pc+=3
             
             elif IR == PUSH:
-                self.sp -= 1
+                self.reg[self.sp] -= 1
                 value = self.reg[operand_a]
-                print(value)
                 self.ram[self.reg[self.sp]] = value
                 self.pc +=2
+
+            elif IR == POP:
+                
+                value = self.ram[self.reg[self.sp]]
+                self.reg[operand_a] = value
+                self.reg[self.sp] += 1
+                self.pc += 2
+
 
 
             else:
