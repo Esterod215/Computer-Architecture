@@ -67,7 +67,10 @@ class CPU:
     def mult(self,v1,v2):
         self.reg[v1] = self.reg[v1] * self.reg[v2]
 
-    # def push(self):
+    def push(self):
+        self.reg[self.sp] -= 1
+        value = self.reg[operand_a]
+        self.ram[self.reg[self.sp]] = value
 
         
 
@@ -112,6 +115,7 @@ class CPU:
         IR                = self.reg[0]
         PUSH              = 0b01000101
         POP               = 0b01000110
+        CALL              = 0b01010000
         self.reg[self.sp] = 0b11110100  #F4
                
         while self.running:
@@ -140,9 +144,7 @@ class CPU:
                 self.pc+=3
             
             elif IR == PUSH:
-                self.reg[self.sp] -= 1
-                value = self.reg[operand_a]
-                self.ram[self.reg[self.sp]] = value
+                self.push()
                 self.pc +=2
 
             elif IR == POP:
@@ -151,6 +153,14 @@ class CPU:
                 self.reg[operand_a] = value
                 self.reg[self.sp] += 1
                 self.pc += 2
+
+            elif IR == CALL:
+                print('inside call')
+                ret_address = self.pc + 2
+                self.reg[self.sp] -= 1
+                self.ram[self.reg[self.sp]] = ret_address
+                subroutine_address = self.reg[operand_a]
+                self.pc = subroutine_address 
 
 
 
