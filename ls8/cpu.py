@@ -10,7 +10,8 @@ class CPU:
         self.ram     = [0b00000000] * 256
         self.pc      = 0 #program count
         self.running = True
-        self.reg      = [0] * 8 #8 registers
+        self.reg     = [0] * 8 #8 registers
+        self.sp      = 7
 
     def load(self):
         """Load a program into memory."""
@@ -65,6 +66,9 @@ class CPU:
 
     def mult(self,v1,v2):
         self.reg[v1] = self.reg[v1] * self.reg[v2]
+
+    # def push(self):
+
         
 
 
@@ -101,11 +105,13 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        HLT = 0b00000001
-        PRN = 0b01000111
-        LDI = 0b10000010
-        MUL = 0b10100010
-        IR = self.reg[0]
+        HLT               = 0b00000001
+        PRN               = 0b01000111
+        LDI               = 0b10000010
+        MUL               = 0b10100010
+        IR                = self.reg[0]
+        PUSH              = 0b01000101
+        self.reg[self.sp] = 0b11110100  #F4
                
         while self.running:
             IR = self.ram[self.pc]
@@ -131,6 +137,14 @@ class CPU:
                 
                 self.alu('MUL',operand_a,operand_b)
                 self.pc+=3
+            
+            elif IR == PUSH:
+                self.sp -= 1
+                value = self.reg[operand_a]
+                print(value)
+                self.ram[self.reg[self.sp]] = value
+                self.pc +=2
+
 
             else:
                 print('command not supported')
